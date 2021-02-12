@@ -5,7 +5,7 @@ export enum BeachPosition {
   S = 'S',
   E = 'E',
   W = 'W',
-  N = 'N'
+  N = 'N',
 }
 
 export interface Beach {
@@ -16,19 +16,23 @@ export interface Beach {
   user: string;
 }
 
+export interface TimeForecast {
+  time: string;
+  forecast: BeachForecast[];
+}
+
 export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 export class Forecast {
-  
   constructor(protected stormGlass = new StormGlass(mockedAxios)) {}
 
   public async processForecastForBeaches(
     beaches: Beach[]
-    ): Promise<BeachForecast[]> {
+  ): Promise<TimeForecast[]> {
     const pointsWithCorrenctSouces: BeachForecast[] = [];
-    for(const beach of beaches) {
+    for (const beach of beaches) {
       const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
       const enrichedBeachData = points.map((e) => ({
         ...{
@@ -42,5 +46,22 @@ export class Forecast {
       }));
       pointsWithCorrenctSouces.push(...enrichedBeachData);
     }
+    return this.mapForecastByTime(pointsWithCorrenctSouces);
+  }
+
+  private mapForecastByTime(forecast: BeachForecast[]): TimeForecast[] {
+    const forecastByTime: TimeForecast[] = [];
+    for(const point of forecast) {
+      const timePoint = forecastByTime.find((f) => f.time === point.time);
+      if(timePoint) {
+        timePoint.forecast.push(point);
+      } else {
+        forecastByTime.push({
+          time: point.time,
+          forecast: [point],
+        })
+      }
+    }
+    return forecastByTime;
   }
 }
