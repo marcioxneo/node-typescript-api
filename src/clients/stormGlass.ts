@@ -30,10 +30,9 @@ export interface ForecastPoint {
 }
 
 export class StormGlass {
-  readonly stormGlassAPIParams = 
+  readonly stormGlassAPIParams =
     'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection, windSpeed';
-  readonly stormGlassAPISource = 
-    'noaa';
+  readonly stormGlassAPISource = 'noaa';
   constructor(protected request: AxiosStatic) {}
 
   public async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
@@ -50,7 +49,7 @@ export class StormGlass {
 
   private normalizeResponse(
     points: StormGlassForecastResponse
-  ) : ForecastPoint[] {
+  ): ForecastPoint[] {
     return points.hours.filter(this.isValidPoint.bind(this)).map((point) => ({
       swellDirection: point.swellDirection[this.stormGlassAPISource],
       swellHeight: point.swellHeight[this.stormGlassAPISource],
@@ -59,7 +58,7 @@ export class StormGlass {
       waveDirection: point.waveDirection[this.stormGlassAPISource],
       waveHeight: point.waveHeight[this.stormGlassAPISource],
       windDirection: point.windDirection[this.stormGlassAPISource],
-      windSpeed: point.windSpeed[this.stormGlassAPISource]  
+      windSpeed: point.windSpeed[this.stormGlassAPISource],
     }));
   }
 
