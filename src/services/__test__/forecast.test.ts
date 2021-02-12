@@ -6,11 +6,11 @@ import { Forecast, Beach, BeachPosition } from '../forecast';
 jest.mock('@src/clients/stormGlass');
 
 describe('Forcast Service', () => {
-  const mockedAxios = axios as jest.Mocked<typeof axios>;
+  const mockedStormGlassService = new StormGlass() as jest.Mocked<StormGlass>;
   it('should return the forecast for a list of beaches', async () => {
-    StormGlass.prototype.fetchPoints = jest
-      .fn()
-      .mockResolvedValue(stormGlassNormalizedResponseFixture);
+    mockedStormGlassService.fetchPoints.mockResolvedValue(
+      stormGlassNormalizedResponseFixture
+    );
 
     const beaches: Beach[] = [
       {
@@ -83,7 +83,7 @@ describe('Forcast Service', () => {
       },
     ];
 
-    const forecast = new Forecast(new StormGlass(mockedAxios));
+    const forecast = new Forecast(mockedStormGlassService);
     const beachesWithRating = await forecast.processForecastForBeaches(beaches);
     expect(beachesWithRating).toEqual(expectedRespnse);
   });
