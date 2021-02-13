@@ -30,10 +30,6 @@ export class ForecastProcessingInternalError extends InternalError {
     super(`Unexpected error during the forecastbprocessing: ${message}`);
   }
 }
-
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-const mockedRequest = new HTTPUtil.Request() as jest.Mocked<HTTPUtil.Request>;
-
 export class Forecast {
   constructor(protected stormGlass = new StormGlass()) {}
 
