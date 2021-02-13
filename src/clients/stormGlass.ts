@@ -1,5 +1,3 @@
-//import { InternalError } from '@src/utils/errors/internal-error';
-//import config, { IConfig } from 'config';
 import { InternalError } from '@src/utils/errors/internal-error';
 import config, { IConfig } from 'config';
 import * as HTTPUtil from '@src/utils/request';
@@ -35,7 +33,7 @@ export interface ForecastPoint {
 
 export class ClientRequestError extends InternalError {
   constructor(message: string) {
-    const internalMessage = 
+    const internalMessage =
       'Unexpected error when trying to communicate to StormGlass';
     super(`${internalMessage}: ${message}`);
   }
@@ -43,7 +41,7 @@ export class ClientRequestError extends InternalError {
 
 export class StormGlassResponseError extends InternalError {
   constructor(message: string) {
-    const internalMessage = 
+    const internalMessage =
       'Unexpected error returned by the StormGlass service';
     super(`${internalMessage}: ${message}`);
   }
@@ -64,9 +62,9 @@ export class StormGlass {
       const response = await this.request.get<StormGlassForecastResponse>(
         `${stormGlassResourceConfig.get(
           'apiUrl'
-          )}/weather/point?lat=${lat}&lng=${lng}&params=${
-            this.stormGlassAPIParams
-          }&source=${this.stormGlassAPISource}`, //&end=1592113802&lat=${lat}&lng=${lng}`,
+        )}/weather/point?lat=${lat}&lng=${lng}&params=${
+          this.stormGlassAPIParams
+        }&source=${this.stormGlassAPISource}`, //&end=1592113802&lat=${lat}&lng=${lng}`,
         {
           headers: {
             Authorization: stormGlassResourceConfig.get('apiToken'),
@@ -78,7 +76,7 @@ export class StormGlass {
       /**
        * This is handling the Axios errors specifically
        */
-      if(HTTPUtil.Request.isRequestError(err)) {
+      if (HTTPUtil.Request.isRequestError(err)) {
         throw new StormGlassResponseError(
           `Error: ${JSON.stringify(err.response.data)} Code: ${
             err.response.status
